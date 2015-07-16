@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.baclpt.joker.backend.myApi.MyApi;
@@ -19,8 +20,21 @@ import java.io.IOException;
  * Created by Bruno on 16-07-2015.
  */
 public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+    private static final String LOG_TAG = EndpointsAsyncTask.class.getCanonicalName();
     private static MyApi myApiService = null;
     private Context context;
+    // callback to alert the observer
+    private TaskCallback mCallback;
+
+    public EndpointsAsyncTask() {
+        super();
+        mCallback = null;
+    }
+
+    public EndpointsAsyncTask(TaskCallback callback) {
+        super();
+        mCallback = callback;
+    }
 
     @Override
     protected String doInBackground(Context... params) {
@@ -43,24 +57,33 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
             myApiService = builder.build();
         }
 
-        context = params[0];
-
-        try {
-            return myApiService.getJoke().execute().getData();
-        } catch (IOException e) {
-            return e.getMessage();
+        if (params != null && params.length > 0) {
+            context = params[0];
+            try {
+                return myApiService.getJoke().execute().getData();
+            } catch (IOException e) {
+                Log.e(LOG_TAG, e.getLocalizedMessage(), e);
+            }
         }
+        return null;
     }
 
     @Override
     protected void onPostExecute(String result) {
-        if (result != null) {
+        //alert observers
+        if (mCallback != null) mCallback.onDone(result);
+
+        if (result != null && context!=null) {
             Intent displayJokeIntent = new Intent(context, JokeTellerActivity.class);
             displayJokeIntent.putExtra(JokeTellerActivity.JOKE_TEXT_EXTRA, result);
             context.startActivity(displayJokeIntent);
-        } else {
-            Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show();
         }
+    }
 
+    /**
+     * Callback interface
+     */
+    public interface TaskCallback {
+        void onDone(String result);
     }
 }
