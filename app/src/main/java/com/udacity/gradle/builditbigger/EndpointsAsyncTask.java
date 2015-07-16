@@ -21,8 +21,11 @@ import java.io.IOException;
  */
 public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String LOG_TAG = EndpointsAsyncTask.class.getCanonicalName();
+    private static final String WEB_SERVICE_URL = "https://bigbuilderjoker.appspot.com/_ah/api/";
+
     private static MyApi myApiService = null;
     private Context context;
+
     // callback to alert the observer
     private TaskCallback mCallback;
 
@@ -40,19 +43,18 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
     protected String doInBackground(Context... params) {
 
         if (myApiService == null) {  // Only do this once
-            MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                    new AndroidJsonFactory(), null)
-                    // options for running against local devappserver
-                    // - 10.0.2.2 is localhost's IP address in Android emulator
-                    // - turn off compression when running against local devappserver
-                    .setRootUrl("http://192.168.56.1:8080/_ah/api/")
-                    .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                        @Override
-                        public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-                            abstractGoogleClientRequest.setDisableGZipContent(true);
-                        }
-                    });
-            // end options for devappserver
+
+//            MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
+//                    new AndroidJsonFactory(), null)
+//                    .setRootUrl("http://192.168.56.1:8080/_ah/api/")
+//                    .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
+//                        @Override
+//                        public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
+//                            abstractGoogleClientRequest.setDisableGZipContent(true);
+//                        }
+//                    });
+            MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+                    .setRootUrl(WEB_SERVICE_URL);
 
             myApiService = builder.build();
         }
