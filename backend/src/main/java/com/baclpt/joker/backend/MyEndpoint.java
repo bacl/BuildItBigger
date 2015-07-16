@@ -6,6 +6,7 @@
 
 package com.baclpt.joker.backend;
 
+import com.baclpt.joker.JokesProvider;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -21,11 +22,11 @@ public class MyEndpoint {
     /**
      * A simple endpoint method that takes a name and says Hi back
      */
-    @ApiMethod(name = "sayHi")
-    public MyBean sayHi(@Named("name") String name) {
+    @ApiMethod(name = "getJoke")
+    public MyBean getJoke() {
         MyBean response = new MyBean();
-        response.setData("Hi, " + name);
-
+        JokesProvider jokesProvider = new JokesProvider();
+        response.setData(jokesProvider.getJoke());
         return response;
     }
 

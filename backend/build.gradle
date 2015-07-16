@@ -26,9 +26,14 @@ dependencies {
     compile 'com.google.appengine:appengine-endpoints:1.9.18'
     compile 'com.google.appengine:appengine-endpoints-deps:1.9.18'
     compile 'javax.servlet:servlet-api:2.5'
+    //
+    compile project(':jokesproviderjavalib')
 }
 
 appengine {
+    // bind to all networks to test
+    httpAddress '0.0.0.0'
+
     downloadSdk = true
     appcfg {
         oauth2 = true
