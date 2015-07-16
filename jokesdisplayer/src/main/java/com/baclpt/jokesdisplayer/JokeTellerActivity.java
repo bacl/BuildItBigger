@@ -1,32 +1,34 @@
-package com.udacity.gradle.builditbigger;
+package com.baclpt.jokesdisplayer;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
-import com.baclpt.joker.JokesProvider;
-import com.baclpt.jokesdisplayer.JokeTellerActivity;
+import android.widget.TextView;
 
 
-public class MainActivity extends ActionBarActivity {
-    private JokesProvider jokesProvider;
+public class JokeTellerActivity extends ActionBarActivity {
+
+    public static final String JOKE_TEXT_EXTRA = "joke_text_extra";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        jokesProvider = new JokesProvider();
+        setContentView(R.layout.activity_joke_teller);
+        final Intent intent = getIntent();
+        if (intent != null) {
+            final String joke = intent.getStringExtra(JOKE_TEXT_EXTRA);
+            final TextView tvJoke = (TextView) findViewById(R.id.joke_text_view);
+            tvJoke.setText(joke);
+            //TODO: null case
+        }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_joke_teller, menu);
         return true;
     }
 
@@ -44,14 +46,4 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public void tellJoke(View view) {
-        if (jokesProvider != null) jokesProvider = new JokesProvider();
-
-        Intent displayJokeIntent = new Intent(this, JokeTellerActivity.class);
-        displayJokeIntent.putExtra(JokeTellerActivity.JOKE_TEXT_EXTRA, jokesProvider.getJoke());
-        startActivity(displayJokeIntent);
-    }
-
-
 }
