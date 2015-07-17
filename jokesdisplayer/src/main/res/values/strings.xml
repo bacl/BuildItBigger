@@ -2,5 +2,6 @@
     <string name="app_name">JokesDisplayer</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="title_random_joke">Random Joke</string>
+    <string name="error_msg_joke_not_found">Joke not found!</string>
 </resources>
