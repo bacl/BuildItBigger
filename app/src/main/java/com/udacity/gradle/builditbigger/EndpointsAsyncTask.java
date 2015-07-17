@@ -5,23 +5,20 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.baclpt.joker.backend.myApi.MyApi;
 import com.baclpt.jokesdisplayer.JokeTellerActivity;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
 import java.io.IOException;
 
 /**
  * Created by Bruno on 16-07-2015.
  */
-public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
     private static final String LOG_TAG = EndpointsAsyncTask.class.getCanonicalName();
-    private static final String WEB_SERVICE_URL = "https://bigbuilderjoker.appspot.com/_ah/api/";
+    public static final String WEB_SERVICE_URL = "https://bigbuilderjoker.appspot.com/_ah/api/";
 
     private static MyApi myApiService = null;
     private Context context;
@@ -40,33 +37,27 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Context... params) {
+    protected String doInBackground(Pair<Context, String>... params) {
+        String appengUrl;
+        if (params != null && params.length > 0) {
+            context = params[0].first;
+            appengUrl = params[0].second;
+        } else {
+            appengUrl = WEB_SERVICE_URL;
+        }
 
         if (myApiService == null) {  // Only do this once
-
-//            MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-//                    new AndroidJsonFactory(), null)
-//                    .setRootUrl("http://192.168.56.1:8080/_ah/api/")
-//                    .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-//                        @Override
-//                        public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-//                            abstractGoogleClientRequest.setDisableGZipContent(true);
-//                        }
-//                    });
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-                    .setRootUrl(WEB_SERVICE_URL);
-
+                    .setRootUrl(appengUrl);
             myApiService = builder.build();
         }
 
-        if (params != null && params.length > 0) {
-            context = params[0];
-            try {
-                return myApiService.getJoke().execute().getData();
-            } catch (IOException e) {
-                Log.e(LOG_TAG, e.getLocalizedMessage(), e);
-            }
+        try {
+            return myApiService.getJoke().execute().getData();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, e.getLocalizedMessage(), e);
         }
+
         return null;
     }
 
@@ -75,7 +66,7 @@ public class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
         //alert observers
         if (mCallback != null) mCallback.onDone(result);
 
-        if (result != null && context!=null) {
+        if (result != null && context != null) {
             Intent displayJokeIntent = new Intent(context, JokeTellerActivity.class);
             displayJokeIntent.putExtra(JokeTellerActivity.JOKE_TEXT_EXTRA, result);
             context.startActivity(displayJokeIntent);

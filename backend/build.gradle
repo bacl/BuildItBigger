@@ -33,7 +33,7 @@ dependencies {
 appengine {
     // bind to all networks to test
     httpAddress '0.0.0.0'
-
+    daemon = true
     downloadSdk = true
     appcfg {
         oauth2 = true

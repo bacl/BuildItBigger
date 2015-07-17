@@ -17,3 +17,15 @@ allprojects {
         jcenter()
     }
 }
+
+//
+// Task  runTestsLocaly  that will start up the GCE dev server, run all Android tests, and shutdown the dev server.
+//
+// Check EndpointsAsyncTaskTest to configure local appengine url
+//
+tasks.getByPath(':app:connectedAndroidTest').mustRunAfter(':backend:appengineRun')
+tasks.getByPath(':backend:appengineStop').mustRunAfter(':app:connectedAndroidTest')
+
+task runTestsLocaly {
+    dependsOn = [':backend:appengineRun',':app:connectedCheck',':backend:appengineStop' ]
+}
