@@ -69,6 +69,7 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
         if (result != null && context != null) {
             Intent displayJokeIntent = new Intent(context, JokeTellerActivity.class);
             displayJokeIntent.putExtra(JokeTellerActivity.JOKE_TEXT_EXTRA, result);
+
             context.startActivity(displayJokeIntent);
         }
     }
