@@ -30,7 +30,7 @@ public class EndpointsAsyncTaskTest extends AndroidTestCase implements Endpoints
         new EndpointsAsyncTask(this).execute(new Pair<Context, String>(null, localAppEngUrl));
 
         // wait for response
-        countDownLatch.await(30, TimeUnit.SECONDS);
+        countDownLatch.await();
 
         assertFalse(TextUtils.isEmpty(requestResponse));
 
